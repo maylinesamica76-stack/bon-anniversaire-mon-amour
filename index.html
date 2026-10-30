@@ -212,7 +212,8 @@ p { margin: 0; max-width: 62ch; }
     var(--wine);
   display: grid; place-items: center; color: var(--blush); text-align: center; overflow: hidden;
 }
-.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo { position: relative; }
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .photo span { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .8; padding: 16px; }
 .polaroid figcaption { font-family: var(--f-script); font-size: 30px; line-height: 1.1; padding-top: 12px; }
 .polaroid figcaption small { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .55; }
@@ -399,7 +400,7 @@ p { margin: 0; max-width: 62ch; }
       <h2 class="reveal" style="--d:1">Nos <em>moments</em></h2>
       <div class="gallery">
         <figure class="polaroid reveal" style="--d:2">
-          <div class="photo"><span>Ta photo ici</span></div>
+          <div class="photo"><img src="photos/le-debut.jpg" alt="Coucher de soleil sur les falaises d'Étretat" style="object-position: 30% 65%"></div>
           <figcaption><small>Le début</small>La première fois</figcaption>
         </figure>
         <figure class="polaroid reveal" style="--d:3">
@@ -407,7 +408,7 @@ p { margin: 0; max-width: 62ch; }
           <figcaption><small>Mon préféré</small>Ce jour-là</figcaption>
         </figure>
         <figure class="polaroid reveal" style="--d:4">
-          <div class="photo"><span>Ta photo ici</span></div>
+          <div class="photo"><img src="photos/a-suivre.jpg" alt="Nous deux dans un parc, main dans la main" style="object-position: center 100%"></div>
           <figcaption><small>À suivre</small>Tous les prochains</figcaption>
         </figure>
       </div>
