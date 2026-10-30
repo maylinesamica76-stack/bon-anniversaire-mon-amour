@@ -71,6 +71,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
   padding: 7px 14px;
 }
 .menu-btn:hover { background: var(--rose); border-color: var(--rose); color: var(--blush); }
+.top-actions { display: flex; align-items: center; gap: 10px; }
+
+/* Bouton musique : petites barres qui dansent quand le son joue, à plat quand il est coupé */
+.sound-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid currentColor; background: none; padding: 0;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+}
+.sound-btn span { width: 2px; height: 4px; background: currentColor; border-radius: 1px; transition: height .3s; }
+.sound-btn.playing span { animation: eq 1s ease-in-out infinite alternate; }
+.sound-btn.playing span:nth-child(2) { animation-delay: -.4s; }
+.sound-btn.playing span:nth-child(3) { animation-delay: -.7s; }
+.sound-btn.playing span:nth-child(4) { animation-delay: -.2s; }
+@keyframes eq { from { height: 4px; } to { height: 14px; } }
+.sound-btn:hover { background: var(--rose); border-color: var(--rose); color: var(--blush); }
 
 /* ───────── Pied : progression + flèches ───────── */
 .footbar {
@@ -366,8 +380,16 @@ p { margin: 0; max-width: 62ch; }
 <header class="topbar">
   <span class="brand">Kaïs <b>&amp;</b> moi</span>
   <span class="label current" id="currentTitle">Couverture</span>
-  <button class="menu-btn label" id="menuBtn" aria-expanded="false" aria-controls="index">Sommaire</button>
+  <div class="top-actions">
+    <button class="sound-btn" id="soundBtn" aria-pressed="false" aria-label="Activer la musique">
+      <span></span><span></span><span></span><span></span>
+    </button>
+    <button class="menu-btn label" id="menuBtn" aria-expanded="false" aria-controls="index">Sommaire</button>
+  </div>
 </header>
+
+<!-- Musique de fond : Leon Bridges, « River ». Elle démarre au premier appui (les navigateurs bloquent le son automatique). -->
+<audio id="music" src="musique/river.mp3" loop preload="auto"></audio>
 
 <main class="deck" id="deck">
 
@@ -662,6 +684,42 @@ p { margin: 0; max-width: 62ch; }
   };
   window.addEventListener('hashchange', fromHash);
   fromHash();
+
+  /* ── Musique de fond ── */
+  const music = $('music'), soundBtn = $('soundBtn');
+  let wantsMusic = true;
+  const setSoundUi = on => {
+    soundBtn.classList.toggle('playing', on);
+    soundBtn.setAttribute('aria-pressed', on);
+    soundBtn.setAttribute('aria-label', on ? 'Couper la musique' : 'Activer la musique');
+  };
+  const playMusic = () => {
+    music.volume = 0;
+    const p = music.play();
+    if (p) p.then(() => {
+      setSoundUi(true);
+      // fondu d'entrée (ignoré sur iPhone, où le volume ne se règle pas par le code)
+      let v = 0; const fade = setInterval(() => { v = Math.min(1, v + .05); music.volume = v; if (v >= 1) clearInterval(fade); }, 80);
+    }).catch(() => setSoundUi(false));
+  };
+  const stopMusic = () => { music.pause(); setSoundUi(false); };
+  soundBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    wantsMusic = music.paused;
+    wantsMusic ? playMusic() : stopMusic();
+  });
+  // Premier appui n'importe où (en général « Ouvrir ta carte ») : on lance la musique
+  const firstTouch = e => {
+    if (e.target.closest && e.target.closest('#soundBtn')) return;
+    ['click', 'touchend', 'keydown'].forEach(t => document.removeEventListener(t, firstTouch, true));
+    if (wantsMusic && music.paused) playMusic();
+  };
+  ['click', 'touchend', 'keydown'].forEach(t => document.addEventListener(t, firstTouch, true));
+  // Pause si on quitte l'appli / l'onglet, reprise au retour
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) music.pause();
+    else if (wantsMusic && soundBtn.classList.contains('playing')) music.play().catch(() => {});
+  });
 
   /* ── Billet : composter ── */
   const ticket = $('ticket'), stampBtn = $('stampBtn');
