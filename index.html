@@ -230,44 +230,14 @@ p { margin: 0; max-width: 62ch; }
 .reasons .btn:hover { background: transparent; color: var(--blush); }
 .reasons-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
 
-/* ── 06 Gâteau ── */
-.cake-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
-.cake-wrap > * { min-width: 0; }
-.cake-copy { display: flex; flex-direction: column; gap: 26px; }
-.cake { position: relative; width: min(340px, 100%); aspect-ratio: 1 / 1; margin: 0 auto; }
-.tier { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 14px 14px 8px 8px; }
-.tier.t1 { bottom: 6%; width: 92%; height: 30%; background: var(--blush); }
-.tier.t2 { bottom: 34%; width: 66%; height: 24%; background: var(--rose); }
-.tier.t1::after, .tier.t2::after {
-  content: ""; position: absolute; inset: 0 0 auto; height: 28%;
-  background: radial-gradient(circle at 10px 0, transparent 9px, var(--wine-deep) 10px) 0 0 / 20px 100%;
-  opacity: .25; border-radius: inherit;
-}
-.plate { position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%); width: 100%; height: 5%; border-radius: 50%; background: var(--wine-deep); }
-.candles { position: absolute; left: 50%; bottom: 58%; transform: translateX(-50%); width: 50%; display: flex; justify-content: space-around; }
-.candle { width: 12px; height: 54px; border-radius: 3px; background: repeating-linear-gradient(-45deg, var(--blush) 0 6px, var(--rose) 6px 12px); position: relative; border: 0; padding: 0; }
-.flame {
-  position: absolute; left: 50%; bottom: 100%; width: 14px; height: 24px; margin-left: -7px; margin-bottom: 4px;
-  background: radial-gradient(ellipse at 50% 70%, #fff6d6 0 25%, #ffc65c 45%, var(--rose) 75%, transparent 76%);
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  transform-origin: 50% 100%; animation: flicker .9s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px rgba(255, 198, 92, .8));
-  transition: opacity .4s, transform .4s;
-}
-.candle:nth-child(2) .flame { animation-delay: -.3s; }
-.candle:nth-child(3) .flame { animation-delay: -.6s; }
-.candle.out .flame { opacity: 0; transform: scaleY(.2); animation: none; }
-.candle.out::after { content: ""; position: absolute; left: 50%; bottom: 100%; width: 2px; height: 26px; margin-left: -1px; background: linear-gradient(to top, rgba(234, 222, 218, .6), transparent); animation: smoke 1.6s ease-out forwards; }
-@keyframes flicker { from { transform: rotate(-4deg) scaleY(1); } to { transform: rotate(4deg) scaleY(1.08); } }
-@keyframes smoke { to { transform: translateY(-30px); opacity: 0; } }
-.wish { font-family: var(--f-display); font-style: italic; font-size: 24px; color: var(--rose); min-height: 1.4em; }
-
-/* ── 07 Lettre ── */
+/* ── 06 Lettre ── */
 .letter { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
 .letter .salut { font-family: var(--f-script); font-size: clamp(48px, 7vw, 80px); line-height: 1; color: var(--wine); }
 .letter p { font-family: var(--f-display); font-size: clamp(19px, 2vw, 23px); line-height: 1.55; max-width: none; }
 .letter p:first-of-type::first-letter { font-size: 3.4em; float: left; line-height: .85; padding: 6px 10px 0 0; color: var(--rose); font-style: italic; }
-.signature { font-family: var(--f-script); font-size: clamp(40px, 5vw, 60px); color: var(--rose); line-height: 1; align-self: flex-end; }
+.signed { align-self: flex-end; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; }
+.signature { font-family: var(--f-script); font-size: clamp(40px, 5vw, 60px); color: var(--rose); line-height: 1; }
+.signed-by { font-family: var(--f-display); font-style: italic; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.4; color: var(--wine); }
 .end-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line-light); padding-top: 22px; }
 
 /* ───────── Menu index ───────── */
@@ -290,11 +260,9 @@ p { margin: 0; max-width: 62ch; }
 .index li button span:first-child { font-family: var(--f-display); font-size: clamp(30px, 5vw, 60px); line-height: 1.1; transition: color .3s, transform .4s var(--ease); }
 .index li button:hover span:first-child, .index li button[aria-current="true"] span:first-child { color: var(--rose); font-style: italic; transform: translateX(12px); }
 
-#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
-
 /* ───────── Responsive ───────── */
 @media (max-width: 820px) {
-  .case, .cake-wrap { grid-template-columns: 1fr; }
+  .case { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
   .polaroid:nth-child(n) { margin-top: 0; }
   .topbar .current { display: none; }
@@ -369,24 +337,24 @@ p { margin: 0; max-width: 62ch; }
       <h2 class="reveal" style="--d:1">Ce que j'aime <em>chez toi</em></h2>
       <ul class="list">
         <li class="reveal" style="--d:2" tabindex="0">
-          <span class="what">Ton <i>sourire</i></span>
-          <span class="cat label">Arme fatale</span>
-          <span class="why">Celui qui arrive avant même que tu parles, et qui règle tous mes problèmes.</span>
+          <span class="what">Ton <i>âme</i></span>
+          <span class="cat label">Ta plus grande qualité</span>
+          <span class="why">Ta bonté, ton honnêteté et ta loyauté. Tu es une âme extraordinaire dans un monde de CHIENS.</span>
         </li>
         <li class="reveal" style="--d:3" tabindex="0">
           <span class="what">Ta façon de <i>m'écouter</i></span>
           <span class="cat label">Patience infinie</span>
-          <span class="why">Même quand je raconte la même histoire pour la troisième fois.</span>
+          <span class="why">Tu sais être patient et à l'écoute avec moi, face à la femme la plus chiante au monde. BRAVO !</span>
         </li>
         <li class="reveal" style="--d:4" tabindex="0">
           <span class="what">Tes <i>bras</i></span>
-          <span class="cat label">Endroit préféré</span>
-          <span class="why">Le seul endroit au monde où tout devient calme.</span>
+          <span class="cat label">Mon endroit préféré</span>
+          <span class="why">Dans tes bras, le seul endroit au monde où tout redevient calme… et où je peux aussi croquer tes gros biceps.</span>
         </li>
         <li class="reveal" style="--d:5" tabindex="0">
           <span class="what">Ton <i>humour</i></span>
-          <span class="cat label">Classé secret</span>
-          <span class="why">Tes blagues nulles que je fais semblant de ne pas trouver drôles.</span>
+          <span class="cat label">Talent numéro 1</span>
+          <span class="why">Même si je fais semblant de ne pas te trouver drôle, je n'ai jamais autant rigolé qu'avec toi. J'avoue, je me suis inspirée de toi pour être aussi drôle maintenant.</span>
         </li>
       </ul>
     </div>
@@ -419,10 +387,10 @@ p { margin: 0; max-width: 62ch; }
   <section class="page" id="raisons" data-tone="rose" data-title="Raisons">
     <div class="inner reasons">
       <span class="label eyebrow reveal">Recherche en cours</span>
-      <h2 class="reveal" style="--d:1">Pourquoi <em>toi ?</em></h2>
+      <h2 class="reveal" style="--d:1">Pourquoi <em>je t'aime ?</em></h2>
       <div class="reason-card reveal" style="--d:2">
         <span class="label" id="reasonCount">Raison 1 sur ∞</span>
-        <p class="reason-text" id="reasonText">Parce que tu rends les jours ordinaires extraordinaires.</p>
+        <p class="reason-text" id="reasonText"></p>
       </div>
       <div class="reasons-row reveal" style="--d:3">
         <button class="btn" id="reasonBtn">Encore une raison</button>
@@ -431,32 +399,7 @@ p { margin: 0; max-width: 62ch; }
     </div>
   </section>
 
-  <!-- ═════════ PAGE 6 · GÂTEAU ═════════ -->
-  <section class="page" id="gateau" data-tone="wine" data-title="Fais un vœu">
-    <div class="inner">
-      <div class="cake-wrap">
-        <div class="cake-copy">
-          <span class="label eyebrow reveal">Instant interactif</span>
-          <h2 class="reveal" style="--d:1">Fais un <em>vœu</em></h2>
-          <p class="lead reveal" style="--d:2">Ferme les yeux, pense très fort à ton vœu, puis souffle les bougies. Tu peux aussi les éteindre une par une.</p>
-          <div class="reveal" style="--d:3"><button class="btn" id="blowBtn">Souffler les bougies</button></div>
-          <p class="wish" id="wish" aria-live="polite"></p>
-        </div>
-        <div class="cake reveal" style="--d:2" aria-label="Gâteau d'anniversaire">
-          <div class="plate"></div>
-          <div class="tier t1"></div>
-          <div class="tier t2"></div>
-          <div class="candles">
-            <button class="candle" aria-label="Éteindre la bougie 1"><span class="flame"></span></button>
-            <button class="candle" aria-label="Éteindre la bougie 2"><span class="flame"></span></button>
-            <button class="candle" aria-label="Éteindre la bougie 3"><span class="flame"></span></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═════════ PAGE 7 · LETTRE ═════════ -->
+  <!-- ═════════ PAGE 6 · LETTRE ═════════ -->
   <section class="page" id="lettre" data-tone="blush" data-title="Ma lettre">
     <div class="inner">
       <div class="letter">
@@ -480,7 +423,10 @@ p { margin: 0; max-width: 62ch; }
         <p class="reveal" style="--d:6">
           Et à ce jour, grâce à toi, il m'est impossible d'imaginer le sentiment d'amour sans toi.
         </p>
-        <span class="signature reveal" style="--d:7">Je t'aime</span>
+        <div class="signed reveal" style="--d:7">
+          <span class="signature">Je t'aime</span>
+          <span class="signed-by">Mayline, ta femme, ton amoureuse,<br>ta partenaire de vie pour toujours.</span>
+        </div>
         <div class="end-row reveal" style="--d:8">
           <span class="label">Fin · avec tout mon cœur</span>
           <button class="btn ghost" data-go="0">Revoir depuis le début</button>
@@ -491,7 +437,7 @@ p { margin: 0; max-width: 62ch; }
 </main>
 
 <footer class="footbar">
-  <span class="label counter" id="counter">01 / 07</span>
+  <span class="label counter" id="counter">01 / 06</span>
   <div class="progress"><i id="bar"></i></div>
   <div class="arrows">
     <button class="arrow" id="prev" aria-label="Page précédente">←</button>
@@ -503,8 +449,6 @@ p { margin: 0; max-width: 62ch; }
   <button class="index-close label" id="closeIndex">Fermer</button>
   <ol id="indexList"></ol>
 </nav>
-
-<canvas id="confetti" aria-hidden="true"></canvas>
 
 <script>
 (() => {
@@ -594,45 +538,33 @@ p { margin: 0; max-width: 62ch; }
   /* ── Raisons (modifie / ajoute tes phrases ici) ── */
   const reasons = [
     "Parce que tu rends les jours ordinaires extraordinaires.",
-    "Parce que ton rire est mon son préféré.",
+    "Parce que te voir sourire et rigoler me rend tellement heureuse.",
     "Parce que tu me comprends sans que j'aie besoin de parler.",
-    "Parce qu'avec toi, même attendre le bus devient un rendez-vous.",
+    "Parce qu'avec toi, même aller à la casse devient une sortie fun.",
     "Parce que tu crois en moi, même quand moi je n'y crois plus.",
     "Parce que tu es la première personne à qui j'ai envie de tout raconter.",
-    "Parce que tu es beau. Voilà. C'est une raison valable.",
-    "Parce qu'avec toi, je me sens chez moi."
+    "Parce que tu es magnifiquement beau. Voilà. C'est une raison valable.",
+    "Parce qu'avec toi, je me sens chez moi.",
+    "Parce que tu es la personne avec qui je veux passer toutes mes journées.",
+    "Parce que tu mérites tout l'amour du monde, et je veux être la personne qui te le donne."
   ];
-  let r = 0;
+  // Ordre aléatoire : on mélange la liste, et on la remélange une fois parcourue (sans répéter la dernière).
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  let deck = shuffle([...reasons]), r = 0;
+  $('reasonText').textContent = deck[0];
   $('reasonBtn').onclick = () => {
     const txt = $('reasonText');
     txt.classList.add('swap');
     setTimeout(() => {
       r++;
-      txt.textContent = reasons[r % reasons.length];
+      if (r % deck.length === 0) {
+        const last = deck[deck.length - 1];
+        do deck = shuffle([...reasons]); while (deck[0] === last);
+      }
+      txt.textContent = deck[r % deck.length];
       $('reasonCount').textContent = `Raison ${r + 1} sur ∞`;
       txt.classList.remove('swap');
     }, 300);
-  };
-
-  /* ── Bougies ── */
-  const candles = [...document.querySelectorAll('.candle')];
-  const checkCandles = () => {
-    if (candles.every(c => c.classList.contains('out'))) {
-      $('wish').textContent = "Vœu enregistré. Joyeux anniversaire, Kaïs !";
-      $('blowBtn').textContent = "Rallumer les bougies";
-      confetti();
-    }
-  };
-  candles.forEach(c => c.onclick = () => { c.classList.add('out'); checkCandles(); });
-  $('blowBtn').onclick = () => {
-    const allOut = candles.every(c => c.classList.contains('out'));
-    if (allOut) {
-      candles.forEach(c => c.classList.remove('out'));
-      $('wish').textContent = '';
-      $('blowBtn').textContent = 'Souffler les bougies';
-    } else {
-      candles.forEach((c, i) => setTimeout(() => { c.classList.add('out'); if (i === candles.length - 1) checkCandles(); }, i * 180));
-    }
   };
 
   /* ── Cœurs flottants (couverture) ── */
@@ -671,34 +603,6 @@ p { margin: 0; max-width: 62ch; }
   };
   drawHearts();
 
-  /* ── Confettis de cœurs ── */
-  const cc = $('confetti'), cx = cc.getContext('2d');
-  let bits = [], running = false;
-  function confetti() {
-    if (reduce) return;
-    const dpr = devicePixelRatio || 1;
-    cc.width = innerWidth * dpr; cc.height = innerHeight * dpr;
-    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const colors = ['#EE4266', '#EADEDA', '#ffffff', '#ff8fa8'];
-    for (let i = 0; i < 160; i++) bits.push({
-      x: innerWidth / 2, y: innerHeight * .55,
-      vx: (Math.random() - .5) * 16, vy: -6 - Math.random() * 12,
-      s: 6 + Math.random() * 10, c: colors[i % colors.length], life: 0, heart: Math.random() > .4
-    });
-    if (!running) { running = true; requestAnimationFrame(tick); }
-  }
-  function tick() {
-    cx.clearRect(0, 0, innerWidth, innerHeight);
-    bits.forEach(b => {
-      b.vy += .3; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.life++;
-      cx.globalAlpha = Math.max(0, 1 - b.life / 150);
-      cx.fillStyle = b.c;
-      if (b.heart) heartPath(cx, b.x, b.y, b.s); else cx.fillRect(b.x, b.y, b.s * .6, b.s * .35);
-    });
-    cx.globalAlpha = 1;
-    bits = bits.filter(b => b.life < 150 && b.y < innerHeight + 40);
-    if (bits.length) requestAnimationFrame(tick); else { running = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
-  }
 })();
 </script>
 </body>
