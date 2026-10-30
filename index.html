@@ -64,7 +64,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .topbar > * { pointer-events: auto; }
 .brand { font-family: var(--f-display); font-style: italic; font-size: 20px; letter-spacing: -.01em; }
-.brand b { color: var(--rose); font-weight: 400; }
+.brand b { color: var(--tone-accent, var(--rose)); font-weight: 400; transition: color .6s var(--ease); }
 .topbar .current { opacity: .75; }
 .menu-btn {
   background: none; border: 1px solid currentColor; border-radius: 999px;
@@ -267,8 +267,24 @@ p { margin: 0; max-width: 62ch; }
   .polaroid:nth-child(n) { margin-top: 0; }
   .topbar .current { display: none; }
   .specs div { grid-template-columns: 96px 1fr; }
-  .list .cat { display: none; }
-  .inner { justify-content: flex-start; }
+  .inner { justify-content: flex-start; gap: 28px; }
+
+  /* Sur téléphone, les barres sont opaques pour que le texte ne passe pas dessous en défilant */
+  .topbar, .footbar { background: var(--tone-bg, var(--wine)); transition: color .6s var(--ease), background-color .6s var(--ease); }
+  .topbar { padding-top: calc(env(safe-area-inset-top, 0px) + 12px); padding-bottom: 12px; }
+  .footbar { padding-top: 12px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); }
+  .page { padding-top: calc(env(safe-area-inset-top, 0px) + 84px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 92px); }
+
+  /* Page 3 : étiquette au-dessus du titre, phrase en dessous, tout visible */
+  .list li { grid-template-columns: 1fr; gap: 6px; padding: 20px 0; }
+  .list li:hover { padding-left: 0; padding-right: 0; }
+  .list li::before { display: none; }
+  .list .cat { order: -1; text-align: left; color: var(--rose); opacity: 1; }
+  .list .what { font-size: 32px; }
+  .list .why { max-height: none; opacity: .85; font-size: 16px; line-height: 1.55; margin-top: 4px; }
+
+  /* Page 5 : hauteur fixe pour que le bouton ne bouge pas d'une raison à l'autre */
+  .reason-text { min-height: 4.2em; }
   .cover .inner { justify-content: space-between; }
 }
 
@@ -454,6 +470,8 @@ p { margin: 0; max-width: 62ch; }
 (() => {
   const pages = [...document.querySelectorAll('.page')];
   const toneFg = { wine: 'var(--blush)', blush: 'var(--ink)', ink: 'var(--blush)', rose: 'var(--blush)' };
+  const toneBg = { wine: 'var(--wine)', blush: 'var(--blush)', ink: 'var(--ink)', rose: 'var(--rose)' };
+  const toneAccent = { wine: 'var(--rose)', blush: 'var(--rose)', ink: 'var(--rose)', rose: 'var(--wine)' };
   const $ = id => document.getElementById(id);
   const pad = n => String(n).padStart(2, '0');
   let current = -1, locked = false;
@@ -495,6 +513,8 @@ p { margin: 0; max-width: 62ch; }
     current = i;
 
     document.documentElement.style.setProperty('--tone-fg', toneFg[next.dataset.tone]);
+    document.documentElement.style.setProperty('--tone-bg', toneBg[next.dataset.tone]);
+    document.documentElement.style.setProperty('--tone-accent', toneAccent[next.dataset.tone]);
     $('currentTitle').textContent = next.dataset.title;
     $('counter').textContent = `${pad(i + 1)} / ${pad(pages.length)}`;
     $('bar').style.width = `${(i / (pages.length - 1)) * 100}%`;
