@@ -238,10 +238,26 @@ p { margin: 0; max-width: 62ch; }
 /* ── 04 Moments ── */
 .gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); align-items: start; }
 .polaroid {
-  margin: 0; background: #fff8f6; color: var(--ink);
-  padding: 12px 12px 18px; box-shadow: 0 24px 50px -24px rgba(31, 39, 27, .55);
+  margin: 0; color: var(--ink); cursor: pointer; perspective: 1400px; -webkit-tap-highlight-color: transparent;
   transform: rotate(var(--r, -2deg)); transition: transform .5s var(--ease);
 }
+/* Retournement : la face avant (photo) et la face arrière (petit mot) */
+.flip { position: relative; transform-style: preserve-3d; transition: transform .8s var(--ease); }
+.polaroid.flipped .flip { transform: rotateY(180deg); }
+.face {
+  background: #fff8f6; padding: 12px 12px 18px; box-shadow: 0 24px 50px -24px rgba(31, 39, 27, .55);
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.face.back {
+  position: absolute; inset: 0; transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 22px;
+  padding: 28px; text-align: center;
+  background: #fff8f6 radial-gradient(circle at 50% 0, rgba(238, 66, 102, .12), transparent 60%);
+}
+.face.back p { margin: 0; font-family: var(--f-display); font-style: italic; font-size: clamp(20px, 2vw, 24px); line-height: 1.4; color: var(--wine); }
+.face.back p::before { content: "♥"; display: block; font-style: normal; color: var(--rose); font-size: 22px; margin-bottom: 14px; }
+.face.back .label { opacity: .5; }
+.flip-hint { opacity: .6; margin-top: -12px; }
 .polaroid:nth-child(2) { --r: 2.5deg; margin-top: 48px; }
 .polaroid:nth-child(3) { --r: -1deg; margin-top: 16px; }
 .polaroid:hover { transform: rotate(0) translateY(-8px) scale(1.02); }
@@ -302,7 +318,7 @@ p { margin: 0; max-width: 62ch; }
 
 /* ───────── Responsive ───────── */
 @media (max-width: 820px) {
-  .gallery { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
+  .gallery { grid-template-columns: 1fr; width: 100%; max-width: 340px; margin: 0 auto; gap: 36px; }
   .polaroid:nth-child(n) { margin-top: 0; }
   .topbar .current { display: none; }
   /* Page 2 : billet vertical, le talon passe en dessous */
@@ -444,23 +460,48 @@ p { margin: 0; max-width: 62ch; }
   </section>
 
   <!-- ═════════ PAGE 4 · NOS MOMENTS ═════════
-       Pour mettre une vraie photo : remplace <span>…</span> dans .photo par <img src="ta-photo.jpg" alt="…"> -->
+       Chaque polaroïd a une face avant (photo + légende) et une face arrière (petit mot) qui s'affiche au toucher. -->
   <section class="page" id="moments" data-tone="blush" data-title="Nos moments">
     <div class="inner">
       <span class="label eyebrow reveal">Archives</span>
       <h2 class="reveal" style="--d:1">Nos <em>moments</em></h2>
+      <p class="label flip-hint reveal" style="--d:2">Touche une photo pour la retourner</p>
       <div class="gallery">
-        <figure class="polaroid reveal" style="--d:2">
-          <div class="photo"><img src="photos/le-debut.jpg" alt="Coucher de soleil sur les falaises d'Étretat" style="object-position: 30% 65%"></div>
-          <figcaption>Nos débuts</figcaption>
+        <figure class="polaroid reveal" style="--d:2" tabindex="0" role="button" aria-pressed="false" aria-label="Nos débuts : retourner la photo">
+          <div class="flip">
+            <div class="face front">
+              <div class="photo"><img src="photos/le-debut.jpg" alt="Coucher de soleil sur les falaises d'Étretat" style="object-position: 30% 65%"></div>
+              <figcaption>Nos débuts</figcaption>
+            </div>
+            <div class="face back">
+              <p>Le début de tout. Je ne savais pas encore que tu allais devenir mon endroit préféré.</p>
+              <span class="label">Touche pour revenir</span>
+            </div>
+          </div>
         </figure>
-        <figure class="polaroid reveal" style="--d:3">
-          <div class="photo"><img src="photos/ma-preferee.jpg" alt="Selfie de nous deux au bord de la Tamise, à Londres" style="object-position: 64% center"></div>
-          <figcaption>Ma préférée</figcaption>
+        <figure class="polaroid reveal" style="--d:3" tabindex="0" role="button" aria-pressed="false" aria-label="Ma préférée : retourner la photo">
+          <div class="flip">
+            <div class="face front">
+              <div class="photo"><img src="photos/ma-preferee.jpg" alt="Selfie de nous deux au bord de la Tamise, à Londres" style="object-position: 64% center"></div>
+              <figcaption>Ma préférée</figcaption>
+            </div>
+            <div class="face back">
+              <p>Toi, moi, Londres et ce sourire. Si je pouvais garder un seul instant, ce serait celui-là.</p>
+              <span class="label">Touche pour revenir</span>
+            </div>
+          </div>
         </figure>
-        <figure class="polaroid reveal" style="--d:4">
-          <div class="photo"><img src="photos/a-suivre.jpg" alt="Nous deux dans un parc, main dans la main" style="object-position: center 100%"></div>
-          <figcaption>À suivre…</figcaption>
+        <figure class="polaroid reveal" style="--d:4" tabindex="0" role="button" aria-pressed="false" aria-label="À suivre… : retourner la photo">
+          <div class="flip">
+            <div class="face front">
+              <div class="photo"><img src="photos/a-suivre.jpg" alt="Nous deux dans un parc, main dans la main" style="object-position: center 100%"></div>
+              <figcaption>À suivre…</figcaption>
+            </div>
+            <div class="face back">
+              <p>Ce n'est que le début. J'ai hâte d'écrire tous les prochains chapitres avec toi.</p>
+              <span class="label">Touche pour revenir</span>
+            </div>
+          </div>
         </figure>
       </div>
     </div>
@@ -632,6 +673,16 @@ p { margin: 0; max-width: 62ch; }
   };
   stampBtn.onclick = stamp;
   ticket.onclick = stamp;
+
+  /* ── Nos moments : un appui retourne la photo ── */
+  document.querySelectorAll('.polaroid').forEach(card => {
+    const flip = () => {
+      const on = card.classList.toggle('flipped');
+      card.setAttribute('aria-pressed', on);
+    };
+    card.addEventListener('click', flip);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
+  });
 
   /* ── Ce que j'aime : un appui ouvre une ligne et referme les autres ── */
   const loves = [...document.querySelectorAll('.list li')];
