@@ -185,14 +185,21 @@ p { margin: 0; max-width: 62ch; }
   transition: padding .4s var(--ease), color .4s;
 }
 .list li::before { content: ""; position: absolute; inset: 0; background: var(--rose); transform: scaleY(0); transform-origin: bottom; transition: transform .45s var(--ease); z-index: -1; }
-.list li:hover::before { transform: scaleY(1); }
-.list li:hover { padding-left: 20px; padding-right: 20px; }
+.list li { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.list li.open::before { transform: scaleY(1); }
+.list li.open { padding-left: 20px; padding-right: 20px; }
 .list .what { font-family: var(--f-display); font-size: clamp(28px, 4.4vw, 56px); line-height: 1.05; }
 .list .what i { font-style: italic; }
 .list .cat { opacity: .7; text-align: right; }
 .list .why { grid-column: 1 / -1; max-height: 0; overflow: hidden; opacity: 0; transition: max-height .5s var(--ease), opacity .4s; }
-.list li:hover .why, .list li:focus-within .why { max-height: 120px; opacity: 1; }
-@media (hover: none) { .list .why { max-height: none; opacity: .85; } }
+.list li.open .why { max-height: 240px; opacity: 1; }
+/* Survol à la souris = même effet que l'élément ouvert (sur téléphone, on appuie pour ouvrir) */
+@media (hover: hover) {
+  .list li:hover::before { transform: scaleY(1); }
+  .list li:hover { padding-left: 20px; padding-right: 20px; }
+  .list li:hover .why, .list li:focus-visible .why { max-height: 240px; opacity: 1; }
+}
+.hint { display: none; }
 
 /* ── 04 Moments ── */
 .gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); align-items: start; }
@@ -216,7 +223,6 @@ p { margin: 0; max-width: 62ch; }
 .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .photo span { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .8; padding: 16px; }
 .polaroid figcaption { font-family: var(--f-script); font-size: 30px; line-height: 1.1; padding-top: 12px; }
-.polaroid figcaption small { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .55; }
 
 /* ── 05 Raisons ── */
 .reasons { align-items: flex-start; }
@@ -275,13 +281,17 @@ p { margin: 0; max-width: 62ch; }
   .footbar { padding-top: 12px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); }
   .page { padding-top: calc(env(safe-area-inset-top, 0px) + 84px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 92px); }
 
-  /* Page 3 : étiquette au-dessus du titre, phrase en dessous, tout visible */
-  .list li { grid-template-columns: 1fr; gap: 6px; padding: 20px 0; }
-  .list li:hover { padding-left: 0; padding-right: 0; }
-  .list li::before { display: none; }
-  .list .cat { order: -1; text-align: left; color: var(--rose); opacity: 1; }
+  /* Page 3 : on appuie sur une ligne pour l'ouvrir (fond rose + texte), une seule ouverte à la fois */
+  .list li { grid-template-columns: 1fr auto; gap: 6px 16px; padding: 20px 4px; }
+  .list li.open { padding-left: 16px; padding-right: 16px; }
+  .list .cat { order: -1; grid-column: 1 / -1; text-align: left; color: var(--rose); opacity: 1; transition: color .4s; }
+  .list li.open .cat { color: var(--blush); opacity: .85; }
   .list .what { font-size: 32px; }
-  .list .why { max-height: none; opacity: .85; font-size: 16px; line-height: 1.55; margin-top: 4px; }
+  .list .what + .why { margin-top: 4px; }
+  .list .why { font-size: 16px; line-height: 1.55; }
+  .list li::after { content: "+"; grid-row: 2; grid-column: 2; align-self: center; font-size: 28px; line-height: 1; font-weight: 300; transition: transform .4s var(--ease); }
+  .list li.open::after { transform: rotate(45deg); }
+  .hint { display: block; opacity: .6; margin-top: -8px; }
 
   /* Page 5 : hauteur fixe pour que le bouton ne bouge pas d'une raison à l'autre */
   .reason-text { min-height: 4.2em; }
@@ -351,6 +361,7 @@ p { margin: 0; max-width: 62ch; }
     <div class="inner">
       <span class="label eyebrow reveal">Sélection de travaux</span>
       <h2 class="reveal" style="--d:1">Ce que j'aime <em>chez toi</em></h2>
+      <p class="label hint reveal" style="--d:2">Appuie sur chaque ligne pour la découvrir</p>
       <ul class="list">
         <li class="reveal" style="--d:2" tabindex="0">
           <span class="what">Ton <i>âme</i></span>
@@ -385,15 +396,15 @@ p { margin: 0; max-width: 62ch; }
       <div class="gallery">
         <figure class="polaroid reveal" style="--d:2">
           <div class="photo"><img src="photos/le-debut.jpg" alt="Coucher de soleil sur les falaises d'Étretat" style="object-position: 30% 65%"></div>
-          <figcaption><small>Le début</small>La première fois</figcaption>
+          <figcaption>Nos débuts</figcaption>
         </figure>
         <figure class="polaroid reveal" style="--d:3">
           <div class="photo"><span>Ta photo ici</span></div>
-          <figcaption><small>Mon préféré</small>Ce jour-là</figcaption>
+          <figcaption>Ma préférée</figcaption>
         </figure>
         <figure class="polaroid reveal" style="--d:4">
           <div class="photo"><img src="photos/a-suivre.jpg" alt="Nous deux dans un parc, main dans la main" style="object-position: center 100%"></div>
-          <figcaption><small>À suivre</small>Tous les prochains</figcaption>
+          <figcaption>À suivre…</figcaption>
         </figure>
       </div>
     </div>
@@ -554,6 +565,21 @@ p { margin: 0; max-width: 62ch; }
   };
   window.addEventListener('hashchange', fromHash);
   fromHash();
+
+  /* ── Ce que j'aime : un appui ouvre une ligne et referme les autres ── */
+  const loves = [...document.querySelectorAll('.list li')];
+  loves.forEach(li => {
+    li.setAttribute('role', 'button');
+    li.setAttribute('aria-expanded', 'false');
+    const toggle = () => {
+      const open = !li.classList.contains('open');
+      loves.forEach(o => { o.classList.remove('open'); o.setAttribute('aria-expanded', 'false'); });
+      li.classList.toggle('open', open);
+      li.setAttribute('aria-expanded', open);
+    };
+    li.addEventListener('click', toggle);
+    li.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  });
 
   /* ── Raisons (modifie / ajoute tes phrases ici) ── */
   const reasons = [
